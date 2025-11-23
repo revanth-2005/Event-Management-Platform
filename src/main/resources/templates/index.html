@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{layout :: head('Home')}"></head>
+
+<body>
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <div class="container">
+        <div class="jumbotron p-5 mb-4 bg-light rounded-3">
+            <h1 class="display-5 fw-bold">Welcome to EventPlatform</h1>
+            <p class="col-md-8 fs-4">Discover and manage events easily.</p>
+            <a class="btn btn-primary btn-lg" href="/calendar" role="button">View Calendar</a>
+        </div>
+
+        <div th:if="${param.error}" class="alert alert-danger">
+            <span th:text="${param.error}"></span>
+        </div>
+
+        <h2>Upcoming Public Events</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col" th:each="event : ${events}">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${event.title}">Event Title</h5>
+                        <p class="card-text" th:text="${event.description}">Description</p>
+                        <p class="card-text"><small class="text-muted" th:text="${event.dateTimeStart}">Date</small></p>
+                        <p class="card-text">Capacity: <span th:text="${event.capacity}"></span></p>
+                    </div>
+                    <div class="card-footer">
+                        <form th:action="@{/events/{id}/register(id=${event.id})}" method="post"
+                            sec:authorize="isAuthenticated()">
+                            <button type="submit" class="btn btn-success w-100">Register</button>
+                        </form>
+                        <a href="/login" class="btn btn-primary w-100" sec:authorize="!isAuthenticated()">Login to
+                            Register</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

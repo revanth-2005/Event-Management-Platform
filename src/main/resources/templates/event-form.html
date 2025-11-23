@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: head('Create Event')}"></head>
+
+<body>
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <div class="container">
+        <h2 class="mb-4">Create New Event</h2>
+        <form th:action="@{/events/create}" th:object="${event}" method="post">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" th:field="*{title}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="location" th:field="*{location}">
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="dateTimeStart" class="form-label">Start Date & Time</label>
+                    <input type="datetime-local" class="form-control" id="dateTimeStart" th:field="*{dateTimeStart}"
+                        required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="dateTimeEnd" class="form-label">End Date & Time</label>
+                    <input type="datetime-local" class="form-control" id="dateTimeEnd" th:field="*{dateTimeEnd}"
+                        required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="capacity" class="form-label">Capacity</label>
+                <input type="number" class="form-control" id="capacity" th:field="*{capacity}" required>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="isPublic" th:field="*{public}">
+                <label class="form-check-label" for="isPublic">Is Public?</label>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="requiresAdminApproval"
+                    th:field="*{requiresAdminApproval}">
+                <label class="form-check-label" for="requiresAdminApproval">Requires Admin Approval?</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Event</button>
+        </form>
+    </div>
+
+</body>
+
+</html>

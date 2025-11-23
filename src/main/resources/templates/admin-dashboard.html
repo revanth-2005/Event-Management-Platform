@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: head('Admin Dashboard')}"></head>
+
+<body>
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <div class="container">
+        <h2 class="mb-4">Admin Dashboard</h2>
+
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">Check-in User</div>
+                    <div class="card-body">
+                        <form id="checkinForm" class="row g-3">
+                            <div class="col-auto">
+                                <label for="registrationCode" class="visually-hidden">Registration Code</label>
+                                <input type="text" class="form-control" id="registrationCode"
+                                    placeholder="Scan or Enter Code">
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-primary mb-3" onclick="checkInUser()">Check
+                                    In</button>
+                            </div>
+                        </form>
+                        <div id="checkinResult" class="mt-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Pending Approvals</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Creator</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="event : ${pendingEvents}">
+                    <td th:text="${event.title}"></td>
+                    <td th:text="${event.creator.username}"></td>
+                    <td th:text="${event.dateTimeStart}"></td>
+                    <td>
+                        <form th:action="@{/admin/events/{id}/approve(id=${event.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                        </form>
+                        <form th:action="@{/admin/events/{id}/reject(id=${event.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(pendingEvents)}">
+                    <td colspan="4" class="text-center">No pending events.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 class="mt-5">All Events</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Creator</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="event : ${allEvents}">
+                    <td th:text="${event.title}"></td>
+                    <td th:text="${event.status}"></td>
+                    <td th:text="${event.creator.username}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function checkInUser() {
+            const code = document.getElementById('registrationCode').value;
+            const resultDiv = document.getElementById('checkinResult');
+
+            fetch('/admin/checkin?registrationCode=' + code, {
+                method: 'POST'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        return response.text().then(text => { throw new Error(text) });
+                    }
+                })
+                .then(data => {
+                    resultDiv.innerHTML = '<div class="alert alert-success">' + data + '</div>';
+                    document.getElementById('registrationCode').value = '';
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = '<div class="alert alert-danger">' + error.message + '</div>';
+                });
+        }
+    </script>
+
+</body>
+
+</html>

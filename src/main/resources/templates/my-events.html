@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: head('My Events')}"></head>
+
+<body>
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <div class="container">
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="registered-tab" data-bs-toggle="tab" data-bs-target="#registered"
+                    type="button" role="tab">Registered Events</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="created-tab" data-bs-toggle="tab" data-bs-target="#created" type="button"
+                    role="tab">Created Events</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="registered" role="tabpanel">
+                <h3>Events I'm Attending</h3>
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    <div class="col" th:each="reg : ${registrations}">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${reg.event.title}">Event</h5>
+                                <p class="card-text">Status: <span class="badge bg-info" th:text="${reg.status}"></span>
+                                </p>
+                                <p class="card-text">Date: <span th:text="${reg.event.dateTimeStart}"></span></p>
+                                <hr>
+                                <h6>Your Ticket (QR Code)</h6>
+                                <img th:if="${qrCodes.containsKey(reg.id)}"
+                                    th:src="'data:image/png;base64,' + ${qrCodes.get(reg.id)}" alt="QR Code"
+                                    class="img-fluid" style="max-width: 150px;">
+                                <p class="small text-muted" th:text="${reg.registrationCode}">Code</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="created" role="tabpanel">
+                <h3>Events I Created</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Capacity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="event : ${createdEvents}">
+                            <td th:text="${event.title}"></td>
+                            <td th:text="${event.dateTimeStart}"></td>
+                            <td><span class="badge bg-secondary" th:text="${event.status}"></span></td>
+                            <td th:text="${event.capacity}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
